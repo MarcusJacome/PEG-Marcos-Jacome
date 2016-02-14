@@ -1,0 +1,22 @@
+package AlgoritmoGenetico;
+
+/**
+ *
+ * @author usuario
+ */
+public class IndividuoTag {
+    
+        double coor_x, coor_y;
+        
+    
+        public IndividuoTag(){
+        
+        
+                coor_x = Math.random()*31.9*10;
+                coor_y = Math.random()*31.9*10;
+        
+        }
+    
+    
+    
+}
