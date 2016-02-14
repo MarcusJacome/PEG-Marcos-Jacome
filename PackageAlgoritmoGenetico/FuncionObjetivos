@@ -1,0 +1,186 @@
+package AlgoritmoGenetico;
+
+/**
+ *
+ * @author usuario
+ */
+public class FuncionObjetivos {
+    
+    
+     private double epsilon, objetivo, TotalSobreLapamiento;    
+     private double  CArea,CRatio;
+     private double d1, d2;
+     private final int TotalTags = 2;
+     
+     
+     
+     IndividuoLector  individuo [] = Poblacion.PoblacionGuardada();
+     IndividuoTag[] tags = Poblacion.tags;
+     
+     
+     Calculos c = new Calculos();
+    
+    public  double E1(IndividuoLector indi){  //EXILON DE SOBRELAPAMIENTO
+            
+            CRatio = 0.2;
+            epsilon = 0;
+            objetivo = 0;
+            TotalSobreLapamiento = 0;
+             
+            
+         for(int x = 0; x < Poblacion.TotalPoblacion(); x++){
+                
+            if(individuo[x] != indi){//EVITA COMPARAR EL MISMO INDIVIDUO
+                  
+             d1 = Math.sqrt(Math.pow((indi.centro_x-individuo[x].centro_x), 2)+Math.pow((indi.centro_y-individuo[x].centro_y), 2));
+                  
+              if(d1 > (indi.radio-individuo[x].radio) && d1 < (indi.radio+individuo[x].radio)){ //SE VERIFICA SI HAY SOBRELAPAMIENTO
+
+                CArea = c.AreaSobreLapamiento(individuo[x])+c.AreaSobreLapamiento(indi);
+                
+                objetivo = CArea * CRatio + objetivo;
+                
+                TotalSobreLapamiento = c.AreaSobreLapamiento(individuo[x])+c.AreaSobreLapamiento(indi) +TotalSobreLapamiento;
+                  
+              }      
+       
+            } 
+            epsilon = objetivo - TotalSobreLapamiento;
+            
+         }
+              
+          return epsilon;
+
+        }
+    
+        
+    public double E2(){
+        
+    
+            int cont = 0;
+            epsilon = 0;
+            objetivo = 0;
+            
+            for(int x = 0; x < Poblacion.TotalPoblacion(); x++){
+               for(int j = 0; j < TotalTags; j++){              
+                  
+                 d1 = Math.sqrt(Math.pow((tags[j].coor_x-individuo[x].centro_x), 2)+Math.pow((tags[j].coor_y-individuo[x].centro_y), 2));
+                  
+                 if(d2 > individuo[x].radio){
+                   cont++;
+            
+                  }
+                 if(cont == TotalTags)
+                 epsilon++;
+                 else epsilon = 0;
+               }
+            
+            }
+            
+           return epsilon;
+        
+        }
+    
+    
+    public double E3(IndividuoLector x){
+        int cont = 0;
+        epsilon = 0;
+        
+       
+          for(int j = 0; j < TotalTags; j++){
+            d1 = Math.sqrt(Math.pow((tags[j].coor_x-x.centro_x), 2)+Math.pow((tags[j].coor_y-x.centro_y), 2));
+            
+            if( d1 < x.radio)
+                cont++;
+          }
+          
+            epsilon = TotalTags - cont;
+        
+        
+    return epsilon;
+    }
+    
+    public double E4(){
+        int cont = 0;
+        epsilon = 0;
+        
+        double limite_x = 500, limite_y = 500;
+        
+        for(int x = 0; x < Poblacion.TotalPoblacion(); x++) 
+            if(individuo[x].centro_x > limite_x && individuo[x].centro_y > limite_y)
+                cont++;
+        
+        epsilon = -cont;
+        
+        
+    return epsilon;
+    
+    }
+    
+    public double E5(){
+        
+        int cont = 0, cont1 = 0, cont2 = 0;
+        epsilon = 0;
+        
+        for(int x = 0; x < Poblacion.TotalPoblacion(); x++){
+         for(int t = 0; t < TotalTags; t++){
+          for(int j = 0; j < Poblacion.TotalPoblacion(); j++){   
+           d1 = Math.sqrt(Math.pow((tags[t].coor_x-individuo[x].centro_x), 2)+Math.pow((tags[t].coor_y-individuo[x].centro_y), 2));
+           d2 = Math.sqrt(Math.pow((tags[t].coor_x-individuo[j].centro_x), 2)+Math.pow((tags[t].coor_y-individuo[j].centro_y), 2));
+          
+            if(d1 < individuo[x].radio)
+                cont1++;
+           if(d1 < individuo[x].radio && d2 < individuo[j].radio)
+                cont2++;
+           
+           
+          }
+         }
+            if(cont1 == cont2)
+                cont++;
+        }   
+        
+        epsilon = 0 - cont;
+     
+     return epsilon;
+    
+    }
+    
+    public double E6(){
+       int cont = 0;
+    
+        for(int x = 0; x < Poblacion.TotalPoblacion(); x++){
+         for(int t = 0; t < TotalTags; t++){
+          for(int j = 0; j < Poblacion.TotalPoblacion(); j++){   
+           d1 = Math.sqrt(Math.pow((tags[t].coor_x-individuo[x].centro_x), 2)+Math.pow((tags[t].coor_y-individuo[x].centro_y), 2));
+           d2 = Math.sqrt(Math.pow((tags[t].coor_x-individuo[j].centro_x), 2)+Math.pow((tags[t].coor_y-individuo[j].centro_y), 2));
+           
+           if(d1 < individuo[x].radio && d2 < individuo[j].radio)
+                cont++;
+ 
+          }
+         }
+        }
+        epsilon = 0 - cont++;
+    
+    return epsilon;
+    
+    }
+        
+        public  double Fi(IndividuoLector x){
+            double F1, F2, F3, F4, F5, F6, Fi;
+           
+            
+            F1 = 1 /(1 + Math.pow(E1(x), 2));
+            F2 = 1 /(1 + Math.pow(E2(), 2));
+            F3 = 1 /(1 + Math.pow(E3(x), 2));
+            F4 = 1 /(1 + Math.pow(E4(), 2));
+            F5 = 1 /(1 + Math.pow(E5(), 2));
+            F6 = 1 /(1 + Math.pow(E6(), 2));
+            
+            Fi = F1*0.2 + F2*0.2 + F3*0.2 + F4*0.1 + F5*0.2 + F6*0.1;
+            
+           return Fi;        
+        }
+ 
+}
