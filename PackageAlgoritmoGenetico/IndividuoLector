@@ -1,0 +1,168 @@
+package AlgoritmoGenetico;
+
+
+
+public class IndividuoLector {
+       private static int[] cromosoma;
+       private static int int_x, int_y, powerStep;;
+       static double float_x, float_y;               
+       static double valorx, valory;
+       double radio, centro_x, centro_y;
+       double vx,vy;        
+        
+            
+public IndividuoLector(double Pstep){
+        
+                  
+                    radio = 50;
+                    
+                    valorx = Math.random()*31.9;
+                    valory = Math.random()*31.9;
+                    
+                    centro_x = valorx*10 + 10;
+                    centro_y = valory*10 + 10;
+                    
+                    
+                   cromosoma = new int[21];
+                   
+                   if(Pstep == 0.0){
+                   powerStep = 0;
+                   }else if(Pstep == 0.1){
+                   powerStep = 1;
+                   }else if(Pstep == 0.2){
+                   powerStep = 2;
+                   }else if(Pstep == 0.4){
+                   powerStep = 4;
+                   }else if(Pstep == 0.6){
+                   powerStep = 6;
+                   }else if(Pstep == 0.8){
+                   powerStep = 8;
+                   }else if(Pstep == 0.9){
+                   powerStep = 9;
+                   }
+                       
+                   vx = valorx;
+                   vy = valory;
+
+  
+            }
+            
+public static int[] codificarCromosoma(double valorX, double valorY){//TRANSFORMA LOS VALORES A 1s Y 0s
+                
+                   int_x = (int)valorX;
+                   int_y = (int)valorY;
+                   
+                   float_x = valorX-(int)valorX;
+                   float_y = valorY-(int)valorY;
+                
+                // POWERSTEP  
+                    for(int gen = 3; gen > -1; gen--){
+                    cromosoma[gen] = powerStep%2;
+                    powerStep = powerStep/2;
+                    
+                    }
+
+ 
+                // PARTE ENTERA
+                    for(int gen = 21; gen > 0; gen--){
+                       if(gen <= 7 && gen >= 3){
+                        cromosoma[gen] = int_x%2;
+                        int_x = int_x/2; 
+                       }
+                       
+                       if(gen <= 16 && gen >= 12){
+                        cromosoma[gen] = int_y%2;
+                        int_y = int_y/2;
+                       }
+                     }
+                 // PARTE DECIMAL
+                    for(int gen = 0; gen < 21; gen++){
+                       if(gen >= 8 && gen <= 11){
+                        cromosoma[gen] = (int)float_x;
+                        float_x = float_x*2;
+                       }
+                       
+                       if(gen >= 17 && gen <= 20){
+                        cromosoma[gen] = (int)float_y;
+                        float_y = float_y*2;
+                       }
+                     }
+
+                 return cromosoma;
+                       
+            }
+            
+public static void decodificarCromosoma(int cromo[]){//TRANSFORMA LOS BITS 1s Y 0s A VALORES DECIMALES  
+                int_x = 0;
+                int_y = 0;
+                int peso1 = -1, peso2 = -1, peso = -1;
+                int base1 = 1, base2 = 1;
+                
+                //POWERSTEP
+                    for(int gen = 0; gen < 3; gen++){
+                          peso++;
+                          powerStep = (int)(cromo[gen]*Math.pow(2,peso))+powerStep;
+                    }
+                
+                 //PARTE ENTERA
+                    for(int gen = 21; gen > 0; gen--){
+                        
+                       if(gen <= 7 && gen >= 3){
+                           peso1++;
+                           int_x = (int) (cromo[gen]*Math.pow(2,peso1)) + int_x;
+                       }
+                       if(gen <= 16 && gen >= 12){
+                           peso2++;
+                           int_y = (int) (cromo[gen]*Math.pow(2,peso2)) + int_y;
+                       }
+                    }   
+                  
+                 //PARTE DECIMAL
+                    for(int gen = 0; gen < 21; gen++){
+                        
+                       if(gen >= 8 && gen <= 11){
+                           base1 = base1*2;
+                           float_x = cromo[gen]*1/base1 + float_x;
+                       }
+                       if(gen >= 17 && gen <= 20){
+                           base2 = base2*2;
+                           float_y = cromo[gen]*1/base2 + float_y;
+                       }
+                    }
+                    
+                    valorx = int_x + float_x;
+                    valory = int_y + float_y;
+            
+            
+            
+            }
+            
+public static int[] Cromosoma(IndividuoLector x){
+        int [] cromo = new int[21];
+        
+        cromo = codificarCromosoma(x.centro_x, x.centro_y);
+
+      return cromo;
+                    
+}
+            
+public static double ValorX(int [] cromo){
+  
+       decodificarCromosoma(cromo); 
+    
+        return valorx;
+
+}            
+            
+ public static double ValorY(int [] cromo){
+  
+       decodificarCromosoma(cromo); 
+    
+        return valory;
+
+}           
+
+
+     
+ 
+}
