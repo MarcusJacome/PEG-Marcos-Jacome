@@ -1,0 +1,19 @@
+package system_rfid;
+
+
+import javax.swing.JButton;
+
+
+public class Boton extends JButton {
+    
+    public Boton(){
+        
+        setBounds(40, 40, 10, 10);
+        setText("Inicio");
+        setVisible(true);
+        
+    
+    
+    }
+    
+}
