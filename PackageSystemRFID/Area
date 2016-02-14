@@ -1,0 +1,23 @@
+package system_rfid;
+
+import java.awt.Graphics2D;
+
+public class Area {
+    
+       int ejex, ejey;
+        
+        public Area(float longitud_X, float longitud_Y){
+            
+            ejex = Math.round(longitud_X);
+            ejey = Math.round(longitud_Y);
+            
+        }
+        
+        
+        public void ejes(Graphics2D g2, float x, float y){
+        
+           
+                    
+        }
+    
+}
