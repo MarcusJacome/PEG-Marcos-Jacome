@@ -1,0 +1,101 @@
+package AlgoritmoGenetico;
+
+
+
+
+public class Poblacion {
+    
+      private static int totalPoblacion, totalTags ;
+      private static IndividuoLector[] poblacion;
+      static IndividuoTag[] tags;
+   
+   
+
+      //  public Poblacion(){}
+        
+        public Poblacion(int sizePoblacion){
+            
+            totalTags = 2;
+            totalPoblacion = sizePoblacion;
+            tags = new IndividuoTag[totalTags];
+            poblacion = new IndividuoLector[totalPoblacion];
+  
+        }
+    
+       
+        public void CargarPoblacion(){
+            
+             for(int totalIndividuo = 0; totalIndividuo < totalPoblacion; totalIndividuo++){
+             
+               IndividuoLector individuo = new IndividuoLector(0.0);
+               poblacion[totalIndividuo] = individuo;
+
+             }
+
+         /*    for(int totalIndividuo = 0; totalIndividuo < totalTags; totalIndividuo++ ){
+             
+                IndividuoTag individuo = new IndividuoTag();
+                tags[totalIndividuo] = individuo;
+                
+             }*/
+                     
+        
+        }
+ 
+        public static IndividuoLector Individuo(int x){
+        
+                return poblacion[x];
+        
+        }
+        public static int TotalPoblacion(){
+        
+                return totalPoblacion;
+        
+        }
+        
+        public static IndividuoLector[] PoblacionGuardada(){
+        
+                return poblacion;
+        }
+        
+ 
+        
+        public static double LectorPX(int x){
+        
+                return poblacion[x].centro_x;
+        
+        }
+        
+        public static double LectorPY(int x){
+            
+                return poblacion[x].centro_y;
+        
+        }
+        
+        public double TagPX(int x){
+        
+                return tags[x].coor_x;
+        
+        }
+        
+        public double TagPY(int x){
+        
+                return tags[x].coor_y;
+        
+        }
+        
+        public static double realX(int x){
+        
+        return poblacion[x].vx;
+        }
+        
+        public static double realY(int x){
+        
+        return poblacion[x].vy;
+        }
+        
+       
+        
+        
+        
+}
