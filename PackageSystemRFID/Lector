@@ -1,0 +1,74 @@
+package system_rfid;
+
+
+
+
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RadialGradientPaint;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+ 
+
+
+
+/**
+ *
+ * @author usuario
+ */
+public class Lector {
+            
+        
+        double x, y;
+        float negro = 0.0f;
+        float rojo = 0.2f;
+        float amarillo = 0.4f;
+        float verde = 0.6f;
+        float azul = 0.8f;
+        float diametro = 100;
+        float radio = diametro/2;
+        float [] dist = {rojo, amarillo, verde, azul};
+        Color[] colors = {Color.RED, Color.YELLOW, Color.GREEN, Color.BLUE};
+        
+        public Lector(double px, double py){
+        
+           x = px;
+           y = py;        
+             
+        }
+        
+        
+        
+        public void figuraLector(Graphics g){
+          
+           
+            Graphics2D cover = (Graphics2D) g;
+            
+           // Rectangle2D lector = new Rectangle2D.Double(x+radio, y+radio, 6, 6);
+            
+            //cover.fill(lector);
+            
+            Point2D centro = new Point2D.Double(x, y);
+            
+            AlphaComposite ac =  AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.45f);
+ 
+            RadialGradientPaint p = new RadialGradientPaint(centro, radio, dist, colors);
+           
+            cover.setPaint(p);
+            
+            cover.setComposite(ac); // si se coloca despues de cover.fill no traspárencia el ultimo del array
+
+            cover.fill(new Ellipse2D.Double(x-radio, y-radio, diametro, diametro));                    
+           
+          
+        }
+        
+        
+         
+    
+        
+        
+}
