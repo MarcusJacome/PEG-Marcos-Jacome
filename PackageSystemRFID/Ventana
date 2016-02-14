@@ -1,0 +1,33 @@
+package system_rfid;
+
+/**
+ *
+ * @author usuario
+ */
+
+
+import javax.swing.JFrame;
+
+
+
+public class Ventana extends JFrame {
+    
+    static int largoPix = 500;    
+    static int anchoPix = 500;
+            
+        public Ventana(){}
+        
+        public Ventana(String titulo){
+            
+            setVisible(true);
+            setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            setTitle(titulo);
+            setLocation(100, 10);
+            setSize(600, 600);
+          //  setResizable(false);
+
+        }
+
+       
+    
+}
