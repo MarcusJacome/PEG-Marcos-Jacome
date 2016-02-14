@@ -1,0 +1,310 @@
+package AlgoritmoGenetico;
+
+import java.util.Random;
+
+
+
+public class AlgoritmoGenetico {
+     int cont = 0;
+     int [] cromoPadre1, cromoPadre2, cromoPadre3 ,hijo1, hijo2, hijo3, hijo4, hijo5, hijo6;
+     int TamañoPoblacion, Elitismo;
+     double TazaMutacion, TazaCruce;
+     double [] Ft;
+     FuncionObjetivos fo = new FuncionObjetivos();
+     Random random = new Random();
+     IndividuoLector padre1, padre2,padre3, hijo;
+     IndividuoLector [] decendencia;
+     
+        
+     
+public AlgoritmoGenetico(int tamañoPoblacion, int elitismo, double tazaMutacion, double tazaCruce){
+            
+            TamañoPoblacion = tamañoPoblacion;
+            TazaMutacion = tazaMutacion;
+            TazaCruce = tazaCruce;
+            Elitismo = elitismo;    
+            cromoPadre1 = new int[21];
+            cromoPadre2 = new int[21];
+            cromoPadre3 = new int[21];
+            hijo1 = new int[21];
+            hijo2 = new int[21];
+            hijo3 = new int[21];
+            hijo4 = new int[21];
+            hijo5 = new int[21];
+            hijo6 = new int[21];
+            Ft = new double [TamañoPoblacion];
+            decendencia = new IndividuoLector[TamañoPoblacion];
+        
+        }
+        
+        
+        
+public void FuncionFittnessIndividual(){
+    
+           for(int i = 0; i < TamañoPoblacion; i++)
+             Ft[i] =  fo.Fi(Poblacion.Individuo(i));
+                   
+        
+        }
+        
+        
+        
+public boolean CondicionTerminacion(){
+        
+            cont++; 
+            
+            if(cont > 100){
+             return true;
+            }
+            
+            return false;
+             
+        }
+     
+public IndividuoLector Seleccion(int opcion){
+    
+            int Lector = 0, k = 0;
+            double sumaFitness = 0 , rand = 0 , posicion = 0 , num = 0;
+            double[] torneo;
+            int [] individuo;
+            
+//++++++++++++++++++++++++++++++RULETA++++++++++++++++++++++++++++++++++++++++++
+         if(opcion == 1){
+            for(int i = 0; i < TamañoPoblacion; i++)
+                sumaFitness += Ft[i];
+           
+                rand  = Math.random()*sumaFitness;
+             
+            for(int i = 0; i < TamañoPoblacion; i++){
+                 posicion += Ft[i];
+                 if(posicion >= rand){
+                     Lector = i;
+                     break;           
+                 }
+             }
+         }
+//+++++++++++++++++++++++++++++TORNEO+++++++++++++++++++++++++++++++++++++++++++
+         if(opcion == 2){
+            
+             k = random.nextInt(TamañoPoblacion);
+             torneo = new double[k];
+             individuo = new int [k];
+             
+           for(int i = 0; i < k; i++){
+               
+               int x;
+               x = random.nextInt(TamañoPoblacion);
+               
+               torneo[i] = Ft[x];
+               individuo[i] = x;
+               
+           }
+           
+           
+           for(int i = 0; i < k; i++){
+             if(torneo[i] > num)
+               num = torneo[i];
+               Lector = individuo[i];
+           }
+         }
+
+
+
+//++++++++++++++++++++++++++++SELECCION ALEATORIA+++++++++++++++++++++++++++++++
+         if(opcion == 3)         
+               Lector = random.nextInt(TamañoPoblacion);
+               
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++             
+            
+             return Poblacion.Individuo(Lector);
+        }
+        
+public void Cruce(double razon_cruce, int numPadres, int opcion){
+        IndividuoLector p1, p2, p3;
+        TazaCruce = razon_cruce/100;
+        int i = 0;
+                
+            if(numPadres == 2){
+            
+                p1 = Seleccion(opcion);
+                p2 = Seleccion(opcion);
+                
+                if(TazaCruce > Math.random() && i > TamañoPoblacion){
+                    
+                   decendencia[i] = CruceTipo1(p1, p2);
+                    i++;                   
+                    }
+
+                }
+            
+            if(numPadres == 3){
+                p1 = Seleccion(opcion);
+                p2 = Seleccion(opcion);
+                p3 = Seleccion(opcion);
+                
+                if(TazaCruce > Math.random() && i > TamañoPoblacion){
+                
+                  decendencia[i] = CruceTipo2(p1, p2, p3);
+                   i++;
+                }
+                
+            }
+                
+
+
+}        
+        
+public IndividuoLector CruceTipo1(IndividuoLector P1, IndividuoLector P2){//DOS PADRES
+           int puntoCorte, i; 
+            
+            padre1 = P1;
+            padre2 = P2;
+            
+            cromoPadre1 = IndividuoLector.codificarCromosoma(padre1.valorx, padre1.valory);
+            cromoPadre2 = IndividuoLector.codificarCromosoma(padre2.valorx, padre2.valory);
+                    
+            puntoCorte = random.nextInt(20);
+            
+            for(int x = 0; x < 21; x++){
+              
+                if(x <= puntoCorte){
+                    hijo1[x] = cromoPadre1[x];
+                    hijo2[x] = cromoPadre2[x];
+                }else if(x > puntoCorte){
+                    hijo1[x] = cromoPadre2[x];
+                    hijo2[x] = cromoPadre1[x];
+                }
+                    
+            }
+            
+            i= random.nextInt(2);
+            
+            if(i == 1){
+                
+            hijo.valorx = IndividuoLector.ValorX(hijo1);
+            hijo.valory = IndividuoLector.ValorY(hijo1);
+            
+           }else if(i == 2){
+            
+            hijo.valorx = IndividuoLector.ValorX(hijo2);
+            hijo.valory = IndividuoLector.ValorY(hijo2);
+           
+           }
+             
+            
+         return hijo;
+                      
+ }
+        
+        
+public IndividuoLector CruceTipo2(IndividuoLector P1, IndividuoLector P2, IndividuoLector P3){// TRES PADRES
+            int puntoCorte1, puntoCorte2, i; 
+            
+            padre1 = P1;
+            padre2 = P2;
+            padre3 = P3;
+            
+            cromoPadre1 = IndividuoLector.codificarCromosoma(padre1.valorx, padre1.valory);
+            cromoPadre2 = IndividuoLector.codificarCromosoma(padre2.valorx, padre2.valory);
+            cromoPadre3 = IndividuoLector.codificarCromosoma(padre3.valorx, padre3.valory);
+            
+            puntoCorte1 = random.nextInt(20);
+            puntoCorte2 = random.nextInt(20);
+            
+            for(int x = 0; x < 21; x++){
+              
+                if(x <= puntoCorte1){
+                    hijo1[x] = cromoPadre1[x];
+                    hijo2[x] = cromoPadre1[x];
+                    hijo3[x] = cromoPadre2[x];
+                    hijo4[x] = cromoPadre2[x];
+                    hijo5[x] = cromoPadre3[x];
+                    hijo6[x] = cromoPadre3[x];
+                }else if(x > puntoCorte1 && x <= puntoCorte2){
+                    hijo1[x] = cromoPadre2[x];
+                    hijo2[x] = cromoPadre3[x];
+                    hijo3[x] = cromoPadre3[x];
+                    hijo4[x] = cromoPadre1[x];
+                    hijo5[x] = cromoPadre1[x];
+                    hijo6[x] = cromoPadre2[x];
+                }else if(x > puntoCorte2){
+                    hijo1[x] = cromoPadre3[x];
+                    hijo2[x] = cromoPadre2[x];
+                    hijo3[x] = cromoPadre1[x];
+                    hijo4[x] = cromoPadre3[x];
+                    hijo5[x] = cromoPadre2[x];
+                    hijo6[x] = cromoPadre1[x];
+                    
+                }    
+            }
+            
+             i= random.nextInt(6);
+            
+         switch (i) {
+             case 1:
+                 hijo.valorx = IndividuoLector.ValorX(hijo1);
+                 hijo.valory = IndividuoLector.ValorY(hijo1);
+                 break;
+             case 2:
+                 hijo.valorx = IndividuoLector.ValorX(hijo2);
+                 hijo.valory = IndividuoLector.ValorY(hijo2);
+                 break;
+             case 3:
+                 hijo.valorx = IndividuoLector.ValorX(hijo3);
+                 hijo.valory = IndividuoLector.ValorY(hijo3);
+                 break;
+             case 4:
+                 hijo.valorx = IndividuoLector.ValorX(hijo4);
+                 hijo.valory = IndividuoLector.ValorY(hijo4);
+                 break;
+             case 5:
+                 hijo.valorx = IndividuoLector.ValorX(hijo5);
+                 hijo.valory = IndividuoLector.ValorY(hijo5);
+                 break;
+             case 6:
+                 hijo.valorx = IndividuoLector.ValorX(hijo6);
+                 hijo.valory = IndividuoLector.ValorY(hijo6);
+                 break;
+             default:
+                 break;
+         }
+            
+        return hijo;    
+ }
+        
+        
+public void Mutacion(double razon_mutacion){
+             
+             int[] cromosoma = new int[21];
+             int gen = 0;
+             TazaMutacion = razon_mutacion/100;
+          
+//+++++++++++++++++++++++MUTACION SIMPLE++++++++++++++++++++++++++++++++++++++++
+             for(int x = 0; x < TamañoPoblacion; x++){
+                
+                 cromosoma = IndividuoLector.Cromosoma(Poblacion.Individuo(x));
+                 gen = random.nextInt(21);
+                
+                 if(TazaMutacion > Math.random()){
+                      if(cromosoma[gen] == 1)
+                        cromosoma[gen] = 0;
+                      else if(cromosoma[gen] == 0)
+                         cromosoma[gen] = 1; 
+                 }
+                 
+                 Poblacion.Individuo(x).valorx = IndividuoLector.ValorX(cromosoma);
+                 Poblacion.Individuo(x).valory = IndividuoLector.ValorY(cromosoma);
+             }
+         
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++         
+         
+         }
+        
+        
+        
+        
+        
+        
+        
+    
+}
