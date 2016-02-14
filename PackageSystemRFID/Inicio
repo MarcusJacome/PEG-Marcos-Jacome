@@ -1,0 +1,52 @@
+package system_rfid;
+
+
+//import AlgoritmoGenetico.AlgoritmoGenetico;
+import AlgoritmoGenetico.Poblacion;
+import DatosTXT.Datos;
+
+
+
+public class Inicio {
+
+    public static void main (String arg[]){
+        //int generacion = 1;   
+        /*AlgoritmoGenetico ga = new AlgoritmoGenetico(10, 0, 0.001, 0.95);*/
+        // Poblacion poblacion = ga.InicioPoblacion(21);
+       
+        
+        Ventana vent = new Ventana("Topologia RFID");
+        Poblacion p = new Poblacion(4);
+        p.CargarPoblacion();
+        
+        MapaPanel map = new MapaPanel(vent.getWidth(), vent.getHeight());
+        vent.add(map);
+        
+       // Boton boton = new Boton();
+        //map.add(boton);
+        
+        Datos archivo = new Datos();
+        archivo.Escribir("DATOS.txt");
+        
+        
+        
+        
+        
+        
+           
+           
+//++++++++++++++++++LAZO DE EJECUCION DEL ALGORITMO GENETICO++++++++++++++++++++ 
+        /* while(ga.CondicionTerminacion() == false){
+           
+           
+         generacion++;  
+        */
+           
+
+        }
+    
+ 
+    
+            
+ 
+}
