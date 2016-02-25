@@ -1,23 +1,74 @@
+
 package system_rfid;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
+
+
 
 public class Area {
     
-       int ejex, ejey;
+       int x, y;
+       static int valor;
+       final int x0 = 30, y0 = 30;
+       
+       
+public Area(int largo,  int ancho){
+
+        x = largo;
+        y = ancho; 
+        valor = x;
         
-        public Area(float longitud_X, float longitud_Y){
+}
+
+public  void dibujarArea(Graphics g){
+    
+            Graphics2D g2 = (Graphics2D)g;
             
-            ejex = Math.round(longitud_X);
-            ejey = Math.round(longitud_Y);
+            Rectangle2D area = new Rectangle2D.Float(x0,y0,500,500);
+            g2.setColor(Color.black);
+            g2.draw(area);
             
-        }
+            
+            for(int m = 0; m <= x; m++){
+                g.drawString(""+m, x0+m*500/x-4, y0);
+                g.drawLine(x0+m*500/x, y0, x0+m*500/x, y0+500);
+                
+            }
+            
+            if(x < 12)
+                for(int cm = 0; cm < x*10; cm++){
+                    g.drawLine(x0+cm*50/x, y0, x0+cm*50/x, y0+500);
+                }
+            
+            for(int i = 1; i <= x; i++){
+                g.drawString(""+i, x0-15, y0+i*500/x+6);
+                g.drawLine(x0, y0+i*500/x, x0+500, y0+i*500/x);
+            }
+            
+            if(x < 12)
+                for(int cm = 0; cm < x*10; cm++){
+                   g.drawLine(x0, y0+cm*50/x, x0+500, y0+cm*50/x);
+                }
+}
+
+public void dibujarLimites(Graphics g, double x, double y){
+    
+                 Graphics2D g2 = (Graphics2D)g;
+            
+                 Rectangle2D limites = new Rectangle2D.Double(x0,y0,x*500/Inicio.rango(),y*500/Inicio.rango());
+                 g2.setColor(Color.red);
+                 g2.draw(limites);
+
+}
+
+public static int valor(){
+
+        return valor;
+}
+
         
-        
-        public void ejes(Graphics2D g2, float x, float y){
-        
-           
-                    
-        }
     
 }
