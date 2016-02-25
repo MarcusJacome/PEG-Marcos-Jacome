@@ -1,0 +1,61 @@
+
+package DatosTXT;
+
+
+
+import AlgoritmoGenetico.Poblacion;
+import java.text.DecimalFormat;
+
+
+
+public class Datos {
+        DecimalFormat df1 = new DecimalFormat("0.0");
+        DecimalFormat df2 = new DecimalFormat("0.000");
+   
+public void Objetivos(Poblacion p,int i, double f1, double f2, double f3, double f4, double f5, double f6, double ft){
+            
+  
+                System.out.print("  "+i);
+                System.out.print("     "+df1.format(p.LectorPX(i)));
+                System.out.print("     "+df1.format(p.LectorPY(i)));
+                System.out.print("     "+p.LectorRadio(i));
+                System.out.print("     "+df2.format(f1));
+                System.out.print("     "+df2.format(f2));
+                System.out.print("     "+df2.format(f3));
+                System.out.print("     "+df2.format(f4));
+                System.out.print("     "+df2.format(f5));
+                System.out.print("     "+df2.format(f6));
+                System.out.print("     "+df2.format(ft));
+                System.out.println();
+        
+  
+}
+
+public void FtMayor(){
+
+
+
+
+}
+
+public void DatosGeneracion(double li, double tc, double lfa, double lr, double ts){
+         
+         
+         System.out.println("O2 Lectores Inutiles "     +li);
+         System.out.println("O3 Tags Cubiertos "        +tc+"%");
+         System.out.println("O4 Lectores Fuera de Area "+lfa);
+         System.out.println("O5 Lectores Redundantes "  +lr);
+         System.out.println("O6 Tags Sobrelapados "     +ts);
+         System.out.println("  ");
+
+}
+
+
+public void DatosTags(String nombre){
+  
+  
+}
+    
+    
+    
+}
