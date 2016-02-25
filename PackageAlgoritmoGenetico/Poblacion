@@ -1,101 +1,176 @@
-package AlgoritmoGenetico;
 
+package AlgoritmoGenetico;
 
 
 
 public class Poblacion {
     
-      private static int totalPoblacion, totalTags ;
-      private static IndividuoLector[] poblacion;
-      static IndividuoTag[] tags;
+         int totalPoblacion, totalTags ;
+         IndividuoLector[] poblacion;
+         IndividuoTag[] tags;
    
    
-
-      //  public Poblacion(){}
         
-        public Poblacion(int sizePoblacion){
+public Poblacion(int sizePoblacion, int sizeTags){
             
-            totalTags = 2;
+            totalTags = sizeTags;
             totalPoblacion = sizePoblacion;
-            tags = new IndividuoTag[totalTags];
             poblacion = new IndividuoLector[totalPoblacion];
-  
-        }
+            tags = new IndividuoTag[totalTags];
+}
     
        
-        public void CargarPoblacion(){
+public void CargarPoblacionLectores(){
             
-             for(int totalIndividuo = 0; totalIndividuo < totalPoblacion; totalIndividuo++){
+         for(int totalIndividuo = 0; totalIndividuo < totalPoblacion; totalIndividuo++){
              
                IndividuoLector individuo = new IndividuoLector(0.0);
                poblacion[totalIndividuo] = individuo;
 
-             }
+         }
+                             
+}
 
-         /*    for(int totalIndividuo = 0; totalIndividuo < totalTags; totalIndividuo++ ){
-             
-                IndividuoTag individuo = new IndividuoTag();
-                tags[totalIndividuo] = individuo;
-                
-             }*/
-                     
+public void CargarPoblacionTags(){
+  
+            for(int t = 0; t < totalTags; t++){
+                    
+                    IndividuoTag tag = new IndividuoTag();
+                    tags[t] = tag;
+                    
+            }
+            
+}
+
+public  void reemplazarPoblacion(IndividuoLector [] nuevaPoblacion){
+
+         System.arraycopy(nuevaPoblacion, 0, poblacion, 0, totalPoblacion);
+          
+
+}
+
+public  IndividuoLector[] LectoresGuardados(){//LECTORES GUARDADOS EN EL VECTOR POBLACION
         
-        }
+                return poblacion;
+}
  
-        public static IndividuoLector Individuo(int x){
+public  IndividuoLector Individuo(int x){// LECTOR ESPECIFICO DEL TOTAL
         
                 return poblacion[x];
         
-        }
-        public static int TotalPoblacion(){
+}
+public  double TotalLectores(){// TAMAÑO DE LA POBLACION DE LECTORES
         
                 return totalPoblacion;
         
-        }
+}
         
-        public static IndividuoLector[] PoblacionGuardada(){
+public  double LectorPX(int x){
+    
+                IndividuoLector lector;
+                
+                lector = poblacion[x];
+                
+                return lector.vx();
         
-                return poblacion;
-        }
+}
         
- 
+public  double LectorPY(int x){
+    
+                IndividuoLector lector;
+                
+                lector = poblacion[x];
+                
+                return lector.vy();
         
-        public static double LectorPX(int x){
+}
+
+public  double LectorRadio(int x){
+    
+                IndividuoLector lector;
+                
+                lector = poblacion[x];
+                
+                return lector.radio();
+}
+
+public  double escaladoX(IndividuoLector i){
+               
+                return i.escalaX;
+
+}
+
+public  double escaladoY(IndividuoLector i){
+              
+                return i.escalaY;
+}
+
+public  double radioEscalado(IndividuoLector i){
+
+                return i.escalaR;
+
+}
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+public void reemplazarTags(IndividuoTag [] copiaTag){
+
+             System.arraycopy(copiaTag, 0, tags, 0, totalTags);
+
+
+
+}
+public  IndividuoTag[] TagGuardados(){// TAG ESPECIFICO DEL TOTAL
+
+                return tags;
+}
+
+public  double TotalTags(){// TAMAÑO DE LA POBLACION DE TAGS
+
+                return totalTags;
+
+}
+
+
+public  double TagPX(int x){
+    
+                IndividuoTag tag;
+                
+                tag = tags[x];
         
-                return poblacion[x].centro_x;
+                return tag.x;
         
-        }
+}
         
-        public static double LectorPY(int x){
-            
-                return poblacion[x].centro_y;
+public  double TagPY(int y){
         
-        }
+                IndividuoTag tag;
+                
+                tag = tags[y];
         
-        public double TagPX(int x){
+                return tag.y;
+}
+
+public  double escalarTagX(int x){
+                IndividuoTag tag;
+                
+                tag = tags[x];
         
-                return tags[x].coor_x;
+                return tag.escalaX;
+
+
+}
+
+public  double escalarTagY(int y){
+                IndividuoTag tag;
+                
+                tag = tags[y];
         
-        }
+                return tag.escalaY;
+
+}
         
-        public double TagPY(int x){
-        
-                return tags[x].coor_y;
-        
-        }
-        
-        public static double realX(int x){
-        
-        return poblacion[x].vx;
-        }
-        
-        public static double realY(int x){
-        
-        return poblacion[x].vy;
-        }
-        
-       
-        
-        
+
+          
+     
         
 }
