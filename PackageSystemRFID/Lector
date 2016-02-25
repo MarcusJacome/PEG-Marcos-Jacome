@@ -1,3 +1,4 @@
+
 package system_rfid;
 
 
@@ -28,32 +29,39 @@ public class Lector {
         float amarillo = 0.4f;
         float verde = 0.6f;
         float azul = 0.8f;
-        float diametro = 100;
-        float radio = diametro/2;
+        float diametro; 
+        float radio;
         float [] dist = {rojo, amarillo, verde, azul};
         Color[] colors = {Color.RED, Color.YELLOW, Color.GREEN, Color.BLUE};
         
-        public Lector(double px, double py){
+  public Lector(double px, double py, double r){
         
            x = px;
-           y = py;        
+           y = py; 
+           
+           radio = (float)r;
+            
+           diametro = radio*2;
+           
              
-        }
+  }
         
         
         
-        public void figuraLector(Graphics g){
+  public void figuraLector(Graphics g){
           
            
             Graphics2D cover = (Graphics2D) g;
             
-           // Rectangle2D lector = new Rectangle2D.Double(x+radio, y+radio, 6, 6);
+            Rectangle2D lector = new Rectangle2D.Double(x-0.5,y-0.5,2,2);
             
-            //cover.fill(lector);
+            cover.setColor(Color.black);
+            
+            cover.fill(lector);
             
             Point2D centro = new Point2D.Double(x, y);
             
-            AlphaComposite ac =  AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.45f);
+            AlphaComposite ac =  AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.40f);
  
             RadialGradientPaint p = new RadialGradientPaint(centro, radio, dist, colors);
            
@@ -64,7 +72,7 @@ public class Lector {
             cover.fill(new Ellipse2D.Double(x-radio, y-radio, diametro, diametro));                    
            
           
-        }
+}
         
         
          
