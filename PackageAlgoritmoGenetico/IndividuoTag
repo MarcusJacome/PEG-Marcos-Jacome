@@ -1,19 +1,27 @@
+
 package AlgoritmoGenetico;
 
-/**
- *
- * @author usuario
- */
+import system_rfid.Area;
+import system_rfid.Inicio;
+
+
 public class IndividuoTag {
     
         double coor_x, coor_y;
-        
+        double x,y;
+        double escalaX, escalaY;
     
         public IndividuoTag(){
         
         
-                coor_x = Math.random()*31.9*10;
-                coor_y = Math.random()*31.9*10;
+               //coor_x = Math.random()*Area.valor();
+               // coor_y = Math.random()*Area.valor();
+                
+                x = Math.random()*Inicio.rango();
+                y = Math.random()*Inicio.rango();
+                
+                escalaX = x*500/Inicio.rango()+30;
+                escalaY = y*500/Inicio.rango()+30;
         
         }
     
