@@ -1,186 +1,345 @@
+
 package AlgoritmoGenetico;
+
+import DatosTXT.Datos;
 
 /**
  *
  * @author usuario
  */
-public class FuncionObjetivos {
+public class FuncionFitness {
     
-    
-     private double epsilon, objetivo, TotalSobreLapamiento;    
-     private double  CArea,CRatio;
+     private double  tagsCubiertos, porcentajeTC, LectoresFueraArea,lectorRedundante,tagsSobrelapados;
+     private int LectoresInutiles;
+     private double  TotalSobreLapamiento;
+     private double T1,T2,T3,T4,T5,T6;
+     private double E1,E2,E3,E4,E5,E6;
+     private double CArea,CRatio;
      private double d1, d2;
-     private final int TotalTags = 2;
+     private final double [] Ft, F1,F2,F3,F4,F5,F6;
+     Datos datos = new Datos();
+     Poblacion p ;
+  
+ public FuncionFitness(Poblacion poblacion){
+ 
+         p = poblacion;
+         Ft = new double[p.totalPoblacion];
+         F1 = new double[p.totalPoblacion];
+         F2 = new double[p.totalPoblacion];
+         F3 = new double[p.totalPoblacion];
+         F4 = new double[p.totalPoblacion];
+         F5 = new double[p.totalPoblacion];
+         F6 = new double[p.totalPoblacion];
+
+ 
+ }   
      
-     
-     
-     IndividuoLector  individuo [] = Poblacion.PoblacionGuardada();
-     IndividuoTag[] tags = Poblacion.tags;
-     
-     
-     Calculos c = new Calculos();
+ 
+ public void informacion(){
+ 
+  
+    //datos.DatosGeneracion(LectoresInutiles, porcentajeTC, LectoresFueraArea,lectorRedundante,tagsSobrelapados);
+    for(int i = 0; i < p.totalPoblacion; i++)  
+      datos.Objetivos(p,i,F1[i],F2[i],F3[i],F4[i],F5[i],F6[i],Ft[i]); 
     
-    public  double E1(IndividuoLector indi){  //EXILON DE SOBRELAPAMIENTO
+      
             
-            CRatio = 0.2;
-            epsilon = 0;
-            objetivo = 0;
+ }    
+
+public  double Ft(IndividuoLector i, int x, Poblacion p){
+           
+          
+          
+           F1[x]=F1(i,p, x);
+           F2[x]=F2(i,p);
+           F3[x]=F3(i,p);
+           F4[x]=F4(4,4.5,p);
+           F5[x]=F5(p);
+           F6[x]=F6(p);
+           
+           Ft[x]= F1[x]+F2[x]+F3[x]+F4[x]+F5[x]+F6[x];
+           
+          // datos.Objetivos(p,x,F1[x],F2[x],F3[x],F4[x],F5[x],F6[x],Ft[x]);
+           
+           return Ft[x];        
+}
+
+
+public  double F1(IndividuoLector i, Poblacion p, int LectorActual){  //EXILON DE SOBRELAPAMIENTO
+            
+            double f1;
+            E1 = 0;
+            T1 = 0;
+            CArea = 0;
+            CRatio = 0;
             TotalSobreLapamiento = 0;
+            d1 = 0;d2 = 0;
              
             
-         for(int x = 0; x < Poblacion.TotalPoblacion(); x++){
+    for(int x = 0; x < p.TotalLectores(); x++){
                 
-            if(individuo[x] != indi){//EVITA COMPARAR EL MISMO INDIVIDUO
-                  
-             d1 = Math.sqrt(Math.pow((indi.centro_x-individuo[x].centro_x), 2)+Math.pow((indi.centro_y-individuo[x].centro_y), 2));
-                  
-              if(d1 > (indi.radio-individuo[x].radio) && d1 < (indi.radio+individuo[x].radio)){ //SE VERIFICA SI HAY SOBRELAPAMIENTO
+        if(LectorActual != x){//EVITA COMPARAR EL MISMO INDIVIDUO
+             
+          d1 = Math.sqrt(Math.pow(i.vx() - p.LectorPX(x), 2)+Math.pow(i.vy() - p.LectorPY(x), 2));
+                 
+           if( d1 < ( i.radio() + p.LectorRadio(x)) && d1 > 0){ //SE VERIFICA SI HAY SOBRELAPAMIENTO
 
-                CArea = c.AreaSobreLapamiento(individuo[x])+c.AreaSobreLapamiento(indi);
-                
-                objetivo = CArea * CRatio + objetivo;
-                
-                TotalSobreLapamiento = c.AreaSobreLapamiento(individuo[x])+c.AreaSobreLapamiento(indi) +TotalSobreLapamiento;
-                  
-              }      
-       
-            } 
-            epsilon = objetivo - TotalSobreLapamiento;
+            CArea = Calculos.AreaSL(i,p.Individuo(x));
             
-         }
-              
-          return epsilon;
+            CRatio = (100-(Math.PI*Math.pow(i.radio(), 2)-CArea)*100/(Math.PI*Math.pow(i.radio(), 2)))/100;
+                
+            T1 = CArea * CRatio + T1;
+            
+            TotalSobreLapamiento = CArea + TotalSobreLapamiento;
+                
+            /*}else if(d1 == 0){
+            
+                CArea = Math.PI*Math.pow(i.radio(), 2);
+                CRatio = 1;
+                
+                T1 = CArea * CRatio + T1;
+                TotalSobreLapamiento = CArea + TotalSobreLapamiento;
+            */
+            }else if(d1 > (i.radio() - p.LectorRadio(x)) && i.radio() != p.LectorRadio(x)){
+             
+                CArea = Math.PI*Math.pow(Math.min(i.radio(), p.LectorRadio(x)), 2);
+                CRatio = 1;
+                
+                T1 = CArea * CRatio + T1;
+                TotalSobreLapamiento = CArea + TotalSobreLapamiento;
+            }    
+       
+        } 
+      
+    }
+             E1 = T1 - TotalSobreLapamiento;
+             
+             f1 = 0.2*1/(1+Math.pow(E1,2));
+             
+             return f1;
 
-        }
+}
     
         
-    public double E2(){
-        
+public  double F2(IndividuoLector i, Poblacion p){
     
+            double f2;
             int cont = 0;
-            epsilon = 0;
-            objetivo = 0;
+            LectoresInutiles = 0;
+            E2 = 0;
             
-            for(int x = 0; x < Poblacion.TotalPoblacion(); x++){
-               for(int j = 0; j < TotalTags; j++){              
-                  
-                 d1 = Math.sqrt(Math.pow((tags[j].coor_x-individuo[x].centro_x), 2)+Math.pow((tags[j].coor_y-individuo[x].centro_y), 2));
-                  
-                 if(d2 > individuo[x].radio){
-                   cont++;
             
-                  }
-                 if(cont == TotalTags)
-                 epsilon++;
-                 else epsilon = 0;
-               }
-            
+            for(int t = 0; t < p.TotalTags(); t++){
+              d1 = Math.sqrt(Math.pow((p.TagPX(t)-i.vx()), 2)+Math.pow((p.TagPY(t)-i.vy()), 2));
+                    if(d1 < i.radio())
+                         cont++;
             }
+                for(int x = 0; x < p.TotalLectores(); x++){
+                    if(i != p.Individuo(x)){
+                        d1 = Math.sqrt(Math.pow(i.vx() - p.LectorPX(x), 2)+Math.pow(i.vy() - p.LectorPY(x), 2));
+                            if(d1 < (i.radio() + p.LectorRadio(x))){
+                                for(int t = 0; t < p.TotalTags(); t++){
+                                    d2 = Math.sqrt(Math.pow((p.TagPX(t)-p.LectorPX(x)), 2)+Math.pow((p.TagPY(t)-p.LectorPY(x)), 2));
+                                       if(d2 < p.LectorRadio(x))
+                                            cont++;
+                                }
+                                    
+                            
+                            }
+                    
+                    
+                    }
+                            
+                
+                }
+                if(cont == 0)
+                 LectoresInutiles++;
+                
             
-           return epsilon;
-        
-        }
-    
-    
-    public double E3(IndividuoLector x){
-        int cont = 0;
-        epsilon = 0;
-        
-       
-          for(int j = 0; j < TotalTags; j++){
-            d1 = Math.sqrt(Math.pow((tags[j].coor_x-x.centro_x), 2)+Math.pow((tags[j].coor_y-x.centro_y), 2));
             
-            if( d1 < x.radio)
-                cont++;
-          }
-          
-            epsilon = TotalTags - cont;
-        
-        
-    return epsilon;
-    }
-    
-    public double E4(){
-        int cont = 0;
-        epsilon = 0;
-        
-        double limite_x = 500, limite_y = 500;
-        
-        for(int x = 0; x < Poblacion.TotalPoblacion(); x++) 
-            if(individuo[x].centro_x > limite_x && individuo[x].centro_y > limite_y)
-                cont++;
-        
-        epsilon = -cont;
-        
-        
-    return epsilon;
-    
-    }
-    
-    public double E5(){
-        
-        int cont = 0, cont1 = 0, cont2 = 0;
-        epsilon = 0;
-        
-        for(int x = 0; x < Poblacion.TotalPoblacion(); x++){
-         for(int t = 0; t < TotalTags; t++){
-          for(int j = 0; j < Poblacion.TotalPoblacion(); j++){   
-           d1 = Math.sqrt(Math.pow((tags[t].coor_x-individuo[x].centro_x), 2)+Math.pow((tags[t].coor_y-individuo[x].centro_y), 2));
-           d2 = Math.sqrt(Math.pow((tags[t].coor_x-individuo[j].centro_x), 2)+Math.pow((tags[t].coor_y-individuo[j].centro_y), 2));
-          
-            if(d1 < individuo[x].radio)
-                cont1++;
-           if(d1 < individuo[x].radio && d2 < individuo[j].radio)
-                cont2++;
+            
+            E2 = 0 - LectoresInutiles;
            
-           
-          }
-         }
-            if(cont1 == cont2)
-                cont++;
-        }   
+            f2 = 0.2*1/(1+Math.pow(E2, 2));
+            
+            
+            return f2;
         
-        epsilon = 0 - cont;
+}
+    
+    
+public  double F3(IndividuoLector i,  Poblacion p){
+        
+        double f3;
+        tagsCubiertos = 0; 
+        E3 = 0;
+        
      
-     return epsilon;
-    
-    }
-    
-    public double E6(){
-       int cont = 0;
-    
-        for(int x = 0; x < Poblacion.TotalPoblacion(); x++){
-         for(int t = 0; t < TotalTags; t++){
-          for(int j = 0; j < Poblacion.TotalPoblacion(); j++){   
-           d1 = Math.sqrt(Math.pow((tags[t].coor_x-individuo[x].centro_x), 2)+Math.pow((tags[t].coor_y-individuo[x].centro_y), 2));
-           d2 = Math.sqrt(Math.pow((tags[t].coor_x-individuo[j].centro_x), 2)+Math.pow((tags[t].coor_y-individuo[j].centro_y), 2));
-           
-           if(d1 < individuo[x].radio && d2 < individuo[j].radio)
-                cont++;
- 
-          }
-         }
-        }
-        epsilon = 0 - cont++;
-    
-    return epsilon;
-    
-    }
         
-        public  double Fi(IndividuoLector x){
-            double F1, F2, F3, F4, F5, F6, Fi;
-           
+          for(int t = 0; t < p.TotalTags(); t++){
+            d1 = Math.sqrt(Math.pow((p.TagPX(t)-i.vx()), 2)+Math.pow((p.TagPY(t)-i.vy()), 2));            
+                 if(d1 < i.radio()){
+                   tagsCubiertos++;
+                 }
+                 
+           }
+          
+            porcentajeTC = tagsCubiertos/p.TotalTags()*100;
             
-            F1 = 1 /(1 + Math.pow(E1(x), 2));
-            F2 = 1 /(1 + Math.pow(E2(), 2));
-            F3 = 1 /(1 + Math.pow(E3(x), 2));
-            F4 = 1 /(1 + Math.pow(E4(), 2));
-            F5 = 1 /(1 + Math.pow(E5(), 2));
-            F6 = 1 /(1 + Math.pow(E6(), 2));
+            E3 = 1 - tagsCubiertos/p.TotalTags();
+            f3 = 1/(1+Math.pow(E3, 2))*0.2;
             
-            Fi = F1*0.2 + F2*0.2 + F3*0.2 + F4*0.1 + F5*0.2 + F6*0.1;
-            
-           return Fi;        
+                    
+            return f3;
+}
+    
+
+public  double F4(double limiteX, double limiteY, Poblacion p){
+        
+        double f4;
+        LectoresFueraArea = 0; 
+        E4 = 0;
+        T4 = 0;
+        
+        
+        for(int x = 0; x < p.TotalLectores(); x++){ 
+            if(p.LectorPX(x) > limiteX || p.LectorPY(x) > limiteY)
+                LectoresFueraArea++;
         }
- 
+        
+        E4 = T4 - LectoresFueraArea;
+        
+        f4 = 0.1*1/(1+Math.pow(E4, 2));
+        
+            
+        return f4;
+    
+}
+    
+public  double F5( Poblacion p){
+        
+        double f5;
+        int  cont1 = 0, cont2=0;
+        boolean lectorDentroArea, tagSobrelapado;
+        lectorRedundante = 0;
+        E5 = 0;
+        T5 = 0;
+              
+            for(int x = 0; x < p.TotalLectores(); x++){
+                cont1=0;
+                cont2 = 0;
+                
+                for(int t = 0; t < p.TotalTags(); t++){
+                   lectorDentroArea = false;
+                    d1 = Math.sqrt(Math.pow((p.TagPX(t)-p.LectorPX(x)), 2)+Math.pow((p.TagPY(t)-p.LectorPY(x)), 2));
+                        if(d1 < p.LectorRadio(x)){
+                            lectorDentroArea = true;
+                            cont1++;
+                        }
+                        
+                        tagSobrelapado = false;
+                        if(lectorDentroArea == true){    
+                            for(int y = 0; y < p.TotalLectores(); y++){
+                              if(p.Individuo(x) != p.Individuo(y)){
+                                 d2 = Math.sqrt(Math.pow((p.TagPX(t)-p.LectorPX(y)), 2)+Math.pow((p.TagPY(t)-p.LectorPY(y)), 2));
+                                  if(d2 < p.LectorRadio(y)){
+                                      tagSobrelapado = true;
+                                    }
+                                }
+                                
+                            }
+                            if(tagSobrelapado == true)
+                               cont2++;
+                        
+                        }
+         
+                }
+                if(cont1  > 0 && cont2 > 0 && cont1 == cont2)
+                 lectorRedundante++;
+            }
+               
+            
+        
+        E5 = T5 - lectorRedundante;
+        
+        f5 = 0.2*1/(1+Math.pow(E5, 2));
+        
+            
+     
+        return f5;
+    
+}
+    
+public  double F6( Poblacion p){
+    
+        double f6;
+        tagsSobrelapados = 0;
+        E6 = 0;
+        T6 = 0;
+       
+       int  cont =0;
+    
+            for(int t = 0 ;t <p.TotalTags(); t++){
+                for(int x = 0; x < p.TotalLectores(); x++){
+                   d1 = Math.sqrt(Math.pow((p.TagPX(t)-p.LectorPX(x)), 2)+Math.pow((p.TagPY(t)-p.LectorPY(x)), 2));
+                    if(d1 < p.LectorRadio(x))
+                        cont++;
+                }
+                    if(cont > 1)
+                       tagsSobrelapados++;  
+              cont = 0;
+            }
+       
+       
+        E6 = T6 - tagsSobrelapados;
+        
+        f6 = 0.1*1/(1+Math.pow(E6, 2));
+    
+        
+        return f6;
+    
+}
+
+public double F1(int x){
+
+    return F1[x];
+
+}
+
+public double F2(int x){
+
+    return F2[x];
+
+}
+
+public double F3(int x){
+
+    return F3[x];
+
+}
+public double F4(int x){
+
+    return F4[x];
+
+}
+
+public double F5(int x){
+
+    return F5[x];
+
+}
+
+public double F6(int x){
+
+    return F6[x];
+
+}
+
+public double Ft(int x){
+
+    return Ft[x];
+    
+}
+        
+
 }
