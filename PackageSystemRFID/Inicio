@@ -1,52 +1,80 @@
+
 package system_rfid;
 
 
-//import AlgoritmoGenetico.AlgoritmoGenetico;
+import AlgoritmoGenetico.AlgoritmoGenetico;
 import AlgoritmoGenetico.Poblacion;
-import DatosTXT.Datos;
 
 
 
-public class Inicio {
+
+
+public class Inicio  {
+    
+       static double Area;
 
     public static void main (String arg[]){
-        //int generacion = 1;   
-        /*AlgoritmoGenetico ga = new AlgoritmoGenetico(10, 0, 0.001, 0.95);*/
-        // Poblacion poblacion = ga.InicioPoblacion(21);
-       
-        
-        Ventana vent = new Ventana("Topologia RFID");
-        Poblacion p = new Poblacion(4);
-        p.CargarPoblacion();
-        
-        MapaPanel map = new MapaPanel(vent.getWidth(), vent.getHeight());
-        vent.add(map);
-        
-       // Boton boton = new Boton();
-        //map.add(boton);
-        
-        Datos archivo = new Datos();
-        archivo.Escribir("DATOS.txt");
-        
-        
-        
-        
-        
-        
-           
-           
-//++++++++++++++++++LAZO DE EJECUCION DEL ALGORITMO GENETICO++++++++++++++++++++ 
-        /* while(ga.CondicionTerminacion() == false){
-           
-           
-         generacion++;  
-        */
-           
+          int  largo = 5;
+          int  ancho = 5;
+          int  Lectores = 4;
+          int  Tags = 20;
+          int numPadres = 3;
+          int opcionSeleccion = 3;
+          double tazaMutacion = 10;
+          double tazaCruce = 1;
+          int elitismo = 0;
+  
+          Area = largo;
 
-        }
-    
+             //Ventana vent = new Ventana("Topologia RED RFID");
  
-    
             
+             // CREACION OBJETO ALGORITMO GENETICO
+             AlgoritmoGenetico ag = new AlgoritmoGenetico(Lectores, elitismo, tazaMutacion, tazaCruce);
+
+             //INICIAR LA POBLACION
+             Poblacion poblacion = new Poblacion(Lectores,Tags);
+             poblacion.CargarPoblacionLectores();
+             poblacion.CargarPoblacionTags();
+             
+             //Panel panel = new Panel(largo,ancho, poblacion);
+             //vent.add(panel);
+
+             
+             //SE EVALUA LA POBLACION
+            System.out.println("                                           POBLACION 0");
+            System.out.println("LECTOR    x      y       R        O1        O2       O3        O4         O5        O6        Ft");
+     
+             ag.evaluarPoblacion(poblacion);
+             
+
+            
+      
+         int iteracion = 1;
+         
+         while(iteracion < 15){
+             
+             System.out.println(" iteracion "+iteracion);
+              //OPERADOR DE CRUZE INTERNAMENTE SELCCIONA LOS PADRES
+              ag.Cruce(tazaCruce, numPadres, opcionSeleccion, poblacion);
+              
+              //OPERADOR MUTACÍON DE LA GENERACION DE CRUZE
+              //ag.Mutacion(10, 1, poblacion);
+              
+            //  System.out.println("                                           POBLACION "+iteracion);
+            //  System.out.println("LECTOR    x         y        R        O1        O2       O3        O4         O5        O6        Ft");
+     
+              
+              //EVALUACION DE SIGUIENTE POBLACION
+               ag.evaluarPoblacion(poblacion);
+
+             
+              iteracion++;
+         }
+       
+         
+         
+         
+        
  
 }
