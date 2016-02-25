@@ -1,3 +1,4 @@
+
 package system_rfid;
 
 import AlgoritmoGenetico.Poblacion;
@@ -7,107 +8,123 @@ import javax.swing.JPanel;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
-import javax.swing.JButton;
 
 
 
 
 
-
-public class MapaPanel extends JPanel {
+public class Panel extends JPanel {
         
-        double posx, posy;
-        int  xo = 25, yo = 10;
-        float largo = 20f;
-        float ancho = 20f;
-       
-        ArrayList<Lector>  lectores = new ArrayList<>();
-        ArrayList<Tag> tags = new ArrayList<>();
-        Calculos c = new Calculos();
-
+        double posx, posy,radio; 
+        double x1,x2,y1,y2;
         
-        
-        
-        public MapaPanel(int largo, int ancho){
+        ArrayList<Lector>  lectores;
+        ArrayList<Tag> tags;
+        Area area;
+        Poblacion p;
+     
+public Panel(int largo, int ancho, Poblacion poblacion){
+    
+            p = poblacion;
+            lectores = new ArrayList<>();
+            tags = new ArrayList<>();
+            area = new Area(largo,ancho);
             
-            
-            setSize(largo, ancho);
+            setLayout(null);
             setBackground(Color.white);
-           
-            
-      // GENERA LAS POSICIONES ALEATORIAS INICIALES
-        
-                for(int x = 0; x < Poblacion.TotalPoblacion(); x++){
-                  posx = Poblacion.LectorPX(x);
-                  posy = Poblacion.LectorPY(x);
-                  
-                  lectores.add(new Lector(posx, posy));
-                }
-      
-              /* for(int x = 0; x < 50; x++){
-                   posx = p.TagPX(x);
-                   posy = p.TagPY(x);
-                   
-                   tags.add(new Tag(posx, posy));
-               
-               }*/
+            setSize(500, 500);
+                           
                 
-        }
+}
         
-                   
-        public void paintComponent(Graphics g){
+       
+        @Override
+ public void paint(Graphics g){
         
                Graphics2D g2 = (Graphics2D)g;
-               super.paintComponent(g);
-
-// DIBUJA EL LECTOR  
+               super.paint(g);
      
+//DIBUJA LOS LECTOR  
+                
+            LectoresAleatorios();
             lectores.stream().forEach((lector) -> {// = for(Lector lector : lectores)
                 lector.figuraLector(g);
             });
-            
+           
 //DIBUJA LOS TAGS
-                   
+             
+            TagsAleatorios();
             tags.stream().forEach((tag) -> { //esta forma se usa colocando la forma anterior y java la cambia automaticamente 
                 tag.figuraTags(g);
             });
              
 //DIBUJA EL AREA DONDE SE COLOCAN LOS LECTORES 
+
+
+            area.dibujarArea(g);
+            area.dibujarLimites(g, 4, 4.5);
             
-            
-            Rectangle2D area = new Rectangle2D.Float(xo,yo,Ventana.largoPix,Ventana.anchoPix);
-            g2.setColor(Color.black);
-            g2.draw(area);   
-            
-            for(int x = 0, gap = 0; x < Math.round(largo)+1 && gap < Math.round(largo)+1; x++,gap++){
-                g2.drawLine(gap*Ventana.largoPix/Math.round(largo)+xo, yo, gap*Ventana.largoPix/Math.round(largo)+xo, yo+Ventana.largoPix);
-                g2.drawString(""+x,gap*Ventana.largoPix/Math.round(largo)+xo, yo);
-            }
-            for(int y = 0, gap = 0; y < Math.round(ancho)+1 && gap < Math.round(ancho)+1 ; y++,gap++){    
-                g2.drawLine(xo, gap*Ventana.anchoPix/Math.round(ancho)+yo, xo+Ventana.anchoPix, gap*Ventana.anchoPix/Math.round(ancho)+yo);
-                g2.drawString(""+y,yo,gap*Ventana.anchoPix/Math.round(ancho)+yo);
-            }
  
 //DIBUJA LOS PUNTOS DE INTERSECCION
            
-           for(int x = 0; x < Poblacion.TotalPoblacion(); x++)
-               for(int j = 0; j < Poblacion.TotalPoblacion(); j++){
-                
-                   if(x != j ){
-                    Ellipse2D interseccion1 = new Ellipse2D.Double(c.puntoX1(x, j)-1,c.puntoY1(x, j)-1, 2, 2);
-                    Ellipse2D interseccion2 = new Ellipse2D.Double(c.puntoX2(x, j)-1,c.puntoY2(x, j)-1, 2, 2);
-                    g2.setColor(Color.red);
-                    g2.draw(interseccion1);
-                    g2.draw(interseccion2);
+            dibujarIntersecciones(g);
+                   
+}
+
+
+public void LectoresAleatorios(){
     
-                   }
+            for(int x = 0; x < p.TotalLectores(); x++){
+                  posx =  p.escaladoX(p.Individuo(x));
+                  posy =  p.escaladoY(p.Individuo(x));
+                  radio = p.radioEscalado(p.Individuo(x));
+                  lectores.add(new Lector(posx, posy,radio));
+                  
+                }
+
+}
+
+public void TagsAleatorios(){
+
+            for(int x = 0; x < p.TotalTags(); x++){
+                   posx = p.escalarTagX(x);
+                   posy = p.escalarTagY(x);
+                   
+                   tags.add(new Tag(posx, posy));
+               
+                }
+
+}
+
+public void dibujarIntersecciones(Graphics g){
+                
+                Graphics2D g2 = (Graphics2D)g;
+    
+          for(int x = 0; x < p.TotalLectores(); x++)
+           for(int j = 0; j < p.TotalLectores(); j++){
+
+               if(x != j ){
+
+                x1 = Calculos.escaladoX1(p.Individuo(x), p.Individuo(j));
+                y1 = Calculos.escaladoY1(p.Individuo(x), p.Individuo(j));
+
+                x2 = Calculos.escaladoX2(p.Individuo(x), p.Individuo(j));
+                y2 = Calculos.escaladoY2(p.Individuo(x), p.Individuo(j));
+
+
+                Rectangle2D interseccion1 = new Rectangle2D.Double(x1-0.5,y1-0.5, 2, 2);
+                Rectangle2D interseccion2 = new Rectangle2D.Double(x2-0.5,y2-0.5, 2, 2);
+                g2.setColor(Color.red);
+                g2.draw(interseccion1);
+                g2.draw(interseccion2);
+
                }
-           
-           
-        }
+           }
+
+}
+
 
           
 }
